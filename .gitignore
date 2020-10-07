@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# TEMP_DIR
+/csv
+
+#IntelliJ IDEA
+/.idea
