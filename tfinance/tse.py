@@ -2,8 +2,10 @@ import logging
 
 import pandas as pd
 from sqlalchemy import create_engine
+
 from .meta.singleton_meta import SingletonMeta
 from .tse_scrapper import TSEScrapper
+
 
 class TSE(metaclass=SingletonMeta):
 
