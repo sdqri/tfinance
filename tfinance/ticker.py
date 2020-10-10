@@ -10,7 +10,7 @@ class Ticker:
         tse = TSE()
         df = tse.tickers
         self._info = df[df.ticker == ticker].iloc[0].to_dict()
-        self._history = tse.fetch_history(ticker=ticker)
+        self._history = tse.fetch_ticker_history(ticker=ticker)
 
     @property
     def name(self):
@@ -43,3 +43,7 @@ class Ticker:
     @property
     def ticker_code(self):
         return self._info["ticker_code"]
+
+    @property
+    def history(self):
+        return self._history
