@@ -28,7 +28,7 @@ Currently there is no active well-documented API for TSE capital market out ther
 .. code:: python
 
     >> import tfinance as tfin
-    >> fold = tfin.TSE("فولاد")
+    >> fold = tfin.Ticker("فولاد")
     >>fold.name
     'فولاد مباركه اصفهان'
     >>fold.sector

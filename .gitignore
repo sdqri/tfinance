@@ -131,8 +131,9 @@ dmypy.json
 # TEMP_DIR
 /csv
 
-# IntelliJ IDEA
-/.idea
+# Intellij IDE
+.idea
+.idea/
 
 # Jupyter notebooks for test
 *.ipynb

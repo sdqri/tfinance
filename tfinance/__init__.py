@@ -1,4 +1,4 @@
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __author__ = "Sadiq Rahmati"
 import logging
 
@@ -7,4 +7,3 @@ from .tse import TSE
 from .tse_scrapper import TSEScrapper
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
-
