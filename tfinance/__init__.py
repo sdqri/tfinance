@@ -3,7 +3,7 @@ __author__ = "Sadiq Rahmati"
 import logging
 
 from .ticker import Ticker
-from .tse import TSE
+from .market import Market
 from .tse_scrapper import TSEScrapper
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())

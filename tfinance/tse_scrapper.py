@@ -45,6 +45,9 @@ class TSEScrapper:
         files_list = os.listdir("./{}".format(self.TEMP_DIR))
         self.ticker_history_set = {re.findall("(\d+)\|.*", f)[0] for f in files_list}
 
+    def fill(self):
+        pass
+
     def get_tickers_list(self):
         """
 
@@ -98,7 +101,7 @@ class TSEScrapper:
 
         """
         self.logger.info("Writing  df_stock_list to database...")
-        self.df_tickers_list.to_sql(name="tickers_list", con=self.engine, if_exists="replace",
+        self.df_tickers_list.to_sql(name="tickers", con=self.engine, if_exists="replace",
                                     index=False, chunksize=500,
                                     dtype={"id": String,
                                            "name": String,

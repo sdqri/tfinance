@@ -1,13 +1,13 @@
 import logging
 
-from .tse import TSE
+from .market import Market
 
 
 class Ticker:
 
     def __init__(self, ticker):
         self.logger = logging.getLogger(__name__)
-        tse = TSE()
+        tse = Market()
         df = tse.tickers
         self._info = df[df.ticker == ticker].iloc[0].to_dict()
         self._history = tse.fetch_ticker_history(ticker=ticker)
