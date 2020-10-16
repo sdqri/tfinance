@@ -9,34 +9,34 @@ from .models import TickerModel, SectorModel
 from .meta.singleton_meta import SingletonMeta
 
 
-# from .tse_scrapper import TSEScrapper
+from .tse_scrapper import TSEScrapper
 
 
 class Market(metaclass=SingletonMeta):
 
-    def __init__(self, connection_arguments="sqlite:///tse.db"):#, Scrapper=TSEScrapper):
+    def __init__(self, connection_arguments="sqlite:///tse.db", Scrapper=TSEScrapper):
         self.logger = logging.getLogger(__name__)
         # Creating database session
         self.engine = create_engine(connection_arguments)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
         # Calling Scrapper
-        # self.scrapper = Scrapper(connection_arguments=connection_arguments)
-        # self.scrapper.update()
+        self.scrapper = Scrapper(self.session)
+        self.scrapper.update()
         # Initializing instance attributes
         self.__tickers = self.fetch_tickers()
         self.__sectors = self.fetch_sectors()
 
     def fetch_tickers(self, **kwargs):
         self.logger.info("Fetching df_tickers_list from database...")
-        # self.scrapper.update_tickers()
+        self.scrapper.update_tickers()
         sql = self.session.query(TickerModel).statement
         tickers = pd.read_sql(sql=sql, con=self.session.bind)
         return tickers
 
     def fetch_tickers_filter_by(self, **kwargs):
         self.logger.info("Fetching tickers from database...")
-        # self.scrapper.update_tickers()
+        self.scrapper.update_tickers()
         sql = self.session.query(TickerModel).filter_by(**kwargs).statement
         tickers = pd.read_sql(sql=sql, con=self.session.bind)
         return tickers
@@ -44,13 +44,14 @@ class Market(metaclass=SingletonMeta):
 
     def fetch_sectors(self):
         self.logger.info("Fetching df_sectors_list from database...")
-        # self.scrapper.sectors()
+        self.scrapper.update_sectors()
         sql = self.session.query(SectorModel).statement
         sectors = pd.read_sql(sql=sql, con=self.session.bind)
         return sectors
 
     def fetch_history(self, **kwargs):
         self.logger.info("Fetching ticker history for from database...")
+        self.scrapper.update_history()
         id = self.session.query(TickerModel).filter_by(**kwargs).first().id
         cls = models.create_ticker_history_model(id)
         sql = self.session.query(cls).statement

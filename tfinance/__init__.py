@@ -6,4 +6,4 @@ from .ticker import Ticker
 from .market import Market
 from .tse_scrapper import TSEScrapper
 
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+logging.getLogger("tfinance").addHandler(logging.NullHandler())
