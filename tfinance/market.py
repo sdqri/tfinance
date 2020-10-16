@@ -27,12 +27,20 @@ class Market(metaclass=SingletonMeta):
         self.__tickers = self.fetch_tickers()
         self.__sectors = self.fetch_sectors()
 
-    def fetch_tickers(self):
+    def fetch_tickers(self, **kwargs):
         self.logger.info("Fetching df_tickers_list from database...")
         # self.scrapper.update_tickers()
         sql = self.session.query(TickerModel).statement
         tickers = pd.read_sql(sql=sql, con=self.session.bind)
         return tickers
+
+    def fetch_tickers_filter_by(self, **kwargs):
+        self.logger.info("Fetching tickers from database...")
+        # self.scrapper.update_tickers()
+        sql = self.session.query(TickerModel).filter_by(**kwargs).statement
+        tickers = pd.read_sql(sql=sql, con=self.session.bind)
+        return tickers
+
 
     def fetch_sectors(self):
         self.logger.info("Fetching df_sectors_list from database...")

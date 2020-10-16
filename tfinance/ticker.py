@@ -5,12 +5,12 @@ from .market import Market
 
 class Ticker:
 
-    def __init__(self, ticker):
+    def __init__(self, **kwargs):
         self.logger = logging.getLogger(__name__)
-        tse = Market()
-        df = tse.tickers
-        self._info = df[df.ticker == ticker].iloc[0].to_dict()
-        self._history = tse.fetch_ticker_history(ticker=ticker)
+        market = Market()
+        df = market.fetch_tickers_filter_by(**kwargs)
+        self._info = df.iloc[0].to_dict()
+        self._history = market.fetch_history(**kwargs)
 
     @property
     def name(self):
