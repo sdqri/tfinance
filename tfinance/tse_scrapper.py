@@ -30,6 +30,12 @@ class TSEScrapper(BaseScrapper):
         self.sectors = None
         # Creating ticker_history_set by checking TEMP_DIR
         self.ticker_history_set = set()
+        self.logger.info("Creating ./{} directory...".format(self.TEMP_DIR))
+        try:
+            os.makedirs(self.TEMP_DIR)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
         files_list = os.listdir("./{}".format(self.TEMP_DIR))
         self.ticker_history_set = {re.findall("(\d+)\|.*", f)[0] for f in files_list}
 
@@ -191,7 +197,7 @@ class TSEScrapper(BaseScrapper):
             futures = []
             for k, file_name in files.items():  # k=ticker_id & v=file_name
                 if not self.session.bind.dialect.has_table(self.session.bind, k):
-                    futures.append(executor.submit(self.read_ticker_history_file, file_name))
+                    futures.append(executor.submit(self.read_ticker_history, file_name))
             for future in concurrent.futures.as_completed(futures):
                 ticker_id, df = future.result()
                 tickers_history[ticker_id] = df
