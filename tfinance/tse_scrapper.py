@@ -8,6 +8,7 @@ from collections import namedtuple
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from sqlalchemy import inspect
 from sqlalchemy.types import Integer, Float, String, DateTime
 from tqdm import tqdm
 
@@ -47,7 +48,7 @@ class TSEScrapper(BaseScrapper):
     def update_tickers(self):
         self.logger.info("Updating tickers ...")
         self.logger.info("Checking whether stocks list table exist or not")
-        if self.session.bind.dialect.has_table(self.session.bind, "tickers"):
+        if inspect(self.session.bind).has_table("tickers"):
             self.logger.info("Loading tickers_list table as a dataframe")
             self.tickers = self.fetch_tickers()
         else:
@@ -59,7 +60,7 @@ class TSEScrapper(BaseScrapper):
     def update_sectors(self):
         self.logger.info("Updating sectors ...")
         self.logger.info("Checking whether sectors list table exist or not")
-        if self.session.bind.dialect.has_table(self.session.bind, "sectors_list"):
+        if inspect(self.session.bind).has_table("sectors_list"):
             self.logger.info("Loading sectors list table as a dataframe")
             pass
         else:
@@ -123,7 +124,7 @@ class TSEScrapper(BaseScrapper):
     def fetch_tickers(self):
         self.logger.info("Getting tickers from database...")
         sql = self.session.query(TickerModel).statement
-        tickers = pd.read_sql(sql=sql, con=self.session.bind)
+        tickers = pd.DataFrame(self.session.bind.connect().execute(sql))
         return tickers
 
     def save_tickers(self):
@@ -196,7 +197,7 @@ class TSEScrapper(BaseScrapper):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = []
             for k, file_name in files.items():  # k=ticker_id & v=file_name
-                if not self.session.bind.dialect.has_table(self.session.bind, k):
+                if not inspect(self.session.bind).has_table(k):
                     futures.append(executor.submit(self.read_ticker_history, file_name))
             for future in concurrent.futures.as_completed(futures):
                 ticker_id, df = future.result()
